@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h2>
+        <ul>
+            {% for rest in restaurants %}
+            <li><a href="{% url 'rest_by_id' rest.id %}">{{ rest.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </h2>
+</body>
+</html>

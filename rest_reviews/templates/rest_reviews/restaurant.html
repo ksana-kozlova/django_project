@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h2>
+        These are reviews of  &quot;{{ rest.title}}&quot; restaurant.
+        <br/>
+    </h2>
+
+    <form action="{% url 'rest_by_id' rest.id%}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="subject" maxlength="80" size="86" placeholder="Review subject" value="{{ subject }}"/>
+        <br/>
+        {% if subject_error %}
+        <p style="color:red;"> {{ subject_error }} </p>
+        {% endif %}
+        <br/>
+        <br>
+        <td><label for='stars'>Please, choose amount of stars</label></td>
+        <td class="radio">
+            <input type="radio" name="stars" id="1" value="{{ 1 }}" checked="checked"/><label for="stars">1</label>
+            <input type="radio" name="stars" id="2" value="{{ stars }}" checked="checked"/><label for="stars">2</label>
+            <input type="radio" name="stars" id="3" value="{{ stars }}" checked="checked"/><label for="stars">3</label>
+        </td>
+        <br/>
+
+        <textarea name="text" maxlength="4096" rows="10" cols="80" placeholder="Review text">{{ text }} </textarea>
+        <br/>
+        {% if text_error %}
+        <p style="color:red;"> {{ text_error }} </p>
+        {% endif %}
+        <input type="submit" value="Add review" />
+        
+    </form>
+    <ul>
+        {% for review in reviews %}
+        <li><i>{{review.created_at}}</i>  <b>{{review.subject}}</b><br>
+            <p>{{review.text}}</p></li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
