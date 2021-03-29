@@ -124,3 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_URL = 'rest_reviews/media/'
+
+MEDIA_ROOT = 'C:/web-site/siteroot/rest_reviews/media'

@@ -14,16 +14,16 @@ class RegistrationForm(forms.Form):
 
 
 StarChoices = [
-    ('1', '1'),
-    ('2', '2'),
-    ('3', '3'),
-    ('4', '4'),
-    ('5', '5')
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5)
 ]
 
 
 class ReviewForm(forms.Form):
 
-    subject = forms.CharField(max_length=80)
-    stars = forms.CharField(widget=forms.RadioSelect(choices=StarChoices))
-    text = forms.CharField(max_length=4096)
+    subject = forms.CharField(label='Subject', max_length=80)
+    stars = forms.IntegerField(label='Stars', widget=forms.RadioSelect(choices=StarChoices))
+    text = forms.CharField(label='Text', max_length=4096)

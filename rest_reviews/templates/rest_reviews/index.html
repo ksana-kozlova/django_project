@@ -1,16 +1,25 @@
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset="UTF-8">
-    <title>{{title}}</title>
-</head>
-<body>
-    <h2>
-        <ul>
-            {% for rest in restaurants %}
-            <li><a href="{% url 'rest_by_id' rest.id %}">{{ rest.title }}</a></li>
-            {% endfor %}
-        </ul>
-    </h2>
-</body>
-</html>
+{% extends 'rest_reviews/base.html' %}
+{% block content %}
+{% load static %}
+<h1>Restaurants</h1>
+<img src="{% static 'rest_reviews/restaurant.jpg' %}" alt="Restaurant picture"/>
+<br>
+<br>
+<h5>
+<ul>
+    {% for rest in restaurants %}
+    <br>
+    <div><a href="{% url 'rest_by_id' rest.id %}">{{ rest.title }}</a> ({{ rest.review_count }} reviews(s))
+    <br>
+    <br>
+    {% if rest.rest_image %}
+    <img src="{{MEDIA_URL}}{{rest.rest_image.url}}" height="400" width="500">
+    {% endif  %} 
+    <br>
+    <br>
+    </div>
+    
+    {% endfor %}
+</ul>
+</h5>
+{% endblock %}
