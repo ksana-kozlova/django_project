@@ -6,10 +6,11 @@ from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Func
 
 from .forms import LoginForm, RegistrationForm, ReviewForm
 from .models import Restaurant, Review
+
 
 
 def log_out(request):
@@ -57,10 +58,13 @@ def sign_up(request):
     return render(request, 'rest_reviews/signup.html', {'form': form})
 
 
+class Round(Func):
+    function = 'ROUND'
+    template='%(function)s(%(expressions)s, 2)'
+
+
 def get_rest_list(request):
-    #rests = Restaurant.objects.order_by('title')
-    rests = Restaurant.objects.annotate(review_count=Count('review')).order_by('-review_count')
-    #rests = Restaurant.objects.annotate(review_stars=Avg('review.stars')).order_by('-review_stars')
+    rests = Restaurant.objects.annotate(review_stars=Round(Avg('review__stars'))).order_by('-review_stars')
     context = {'restaurants': rests}
 
     return render(request, 'rest_reviews/index.html', context)
@@ -80,62 +84,29 @@ def render_rest(request, rest_id, additional_context={}):
                'reviews': rest.review_set.order_by('-created_at'),
                **additional_context
                }
-    #template = loader.get_template('blogger/blog.html')
-    # return HttpResponse(template.render(context, request))
 
     return render(request, 'rest_reviews/restaurant.html', context)
+
 
 @login_required(login_url='login')
 def create_review(request, rest_id):
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
+        form = ReviewForm(request.POST, request.FILES)
         if form.is_valid():
             rest = get_object_or_404(Restaurant, id=rest_id)
             subject = form.cleaned_data['subject']
             stars = form.cleaned_data['stars']
             text = form.cleaned_data['text']
+            image = form.cleaned_data['image']
             user_id = None
             if request.user.is_authenticated:
                 user_id = request.user.id
             else: 
                 user_id = 1
             author = User.objects.get(id=user_id)
-            Review(rest_id=rest.id, subject=subject, text=text, author=author).save()
+            Review(rest_id=rest.id, subject=subject, text=text, author=author, review_image=image, stars=stars).save()
             return HttpResponseRedirect(reverse('rest_by_id', kwargs={'rest_id': rest_id}))
             
     else:  # GET
         form = ReviewForm()
     return render_rest(request, rest_id, {'form': form})
-
-"""
-@login_required(login_url='login')
-def create_review(request, rest_id):
-    rest = get_object_or_404(Restaurant, id=rest_id)
-
-    subject = request.POST['subject']
-    subject_error = None
-    if not subject or subject.isspace():
-        subject_error = 'Please provide non-empty subject!'
-
-    text = request.POST['text']
-    text_error = None
-    if not text or text.isspace():
-        text_error = 'Please provide non-empty text!'
-
-    if subject_error or text_error:
-        error_context = {
-            'subject_error': subject_error,
-            'text_error': text_error,
-            'subject': subject,
-            'text': text
-        }
-        return render_rest(request, rest_id, error_context)
-    else:
-        user_id = None
-        if request.user.is_authenticated:
-            user_id = request.user.id
-        else: 
-            user_id = 1
-        Review(rest_id=rest.id, subject=subject, text=text, author=User.objects.get(id=user_id)).save()
-        return render_rest(request, rest_id)
-"""

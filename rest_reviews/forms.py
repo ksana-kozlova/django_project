@@ -24,6 +24,9 @@ StarChoices = [
 
 class ReviewForm(forms.Form):
 
-    subject = forms.CharField(label='Subject', max_length=80)
-    stars = forms.IntegerField(label='Stars', widget=forms.RadioSelect(choices=StarChoices))
-    text = forms.CharField(label='Text', max_length=4096)
+    subject = forms.CharField(label='Subject', max_length=80, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Very nice place'}))
+    stars = forms.IntegerField(label='Amount of stars', widget=forms.RadioSelect(choices=StarChoices))
+    text = forms.CharField(label='Text', widget=forms.Textarea(attrs={'class': 'form-control', 'cols': 80, 'rows': 10,'placeholder': 'Write something about this place'}))
+    image = forms.ImageField(label='Photo of restaurant', required=False)
+
+        

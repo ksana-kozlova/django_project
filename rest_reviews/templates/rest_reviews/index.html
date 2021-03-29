@@ -2,18 +2,19 @@
 {% block content %}
 {% load static %}
 <h1>Restaurants</h1>
-<img src="{% static 'rest_reviews/restaurant.jpg' %}" alt="Restaurant picture"/>
+<img src="{% static 'rest_reviews/rest_reviews.jpg' %}" class="img-fluid" alt="Restaurant picture" height="500" width="700"/>
 <br>
 <br>
 <h5>
 <ul>
     {% for rest in restaurants %}
     <br>
-    <div><a href="{% url 'rest_by_id' rest.id %}">{{ rest.title }}</a> ({{ rest.review_count }} reviews(s))
+    <div><a href="{% url 'rest_by_id' rest.id %}" class="link-dark">{{ rest.title }}</a> ({{ rest.review_stars }} stars)
+        <br><small class="text-muted">{{ rest.adress }}</small>
     <br>
     <br>
     {% if rest.rest_image %}
-    <img src="{{MEDIA_URL}}{{rest.rest_image.url}}" height="400" width="500">
+    <img src="{{MEDIA_URL}}{{rest.rest_image.url}}" height="400" width="500"/>
     {% endif  %} 
     <br>
     <br>

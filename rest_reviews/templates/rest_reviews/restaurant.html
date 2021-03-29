@@ -9,42 +9,32 @@
 <img src="{{MEDIA_URL}}{{rest.rest_image.url}}" height="400" width="500">
 <br/>
 <br/>
-
-<form method="POST">
+<div class="container-fluid">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <table>{{ form }}</table>
-    <br><br>
-    <input type="submit" value="Add review"/>
-</form>
-<!--<form action="{% url 'rest_by_id' rest.id%}" method="POST">
-    {% csrf_token %}
-    <input type="text" name="subject" maxlength="80" size="86" placeholder="Review subject" value="{{ subject }}"/>
-    <br/>
-    {% if subject_error %}
-    <p style="color:red;"> {{ subject_error }} </p>
-    {% endif %}
-    <br/>
-    <br>
-    <td><label for='stars'>Please, choose amount of stars</label></td>
-    <td class="radio">
-        <input type="radio" name="stars" id="1" value="{{ 1 }}" checked="checked"/><label for="stars">1</label>
-        <input type="radio" name="stars" id="2" value="{{ stars }}" checked="checked"/><label for="stars">2</label>
-        <input type="radio" name="stars" id="3" value="{{ stars }}" checked="checked"/><label for="stars">3</label>
-    </td>
-    <br/>
-
-    <textarea name="text" maxlength="4096" rows="10" cols="80" placeholder="Review text">{{ text }} </textarea>
-    <br/>
-    {% if text_error %}
-    <p style="color:red;"> {{ text_error }} </p>
-    {% endif %}
-    <input type="submit" value="Add review" />
     
-</form>-->
+    {% for field in form %}
+    <br>
+    {{ field.label_tag }} {{ field }}
+    {% if field.help_text %}
+    <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    <br>
+    {% endfor %}
+    <br><br>
+    <button class="btn btn-secondary">Add review</button>
+</form>
+</div>
+
+<br><br>
 <ul>
     {% for review in reviews %}
     <li><i>{{review.created_at}}</i> @{{review.author}} <b>{{review.subject}}</b><br>
-        <p>{{review.text}}</p></li>
+        <p>{{review.text}}</p>
+        {% if review.review_image %}
+        <img src="{{MEDIA_URL}}{{review.review_image.url}}" height="200" width="300"/>
+        {% endif  %} </li>
+        <br><br>
     {% endfor %}
 </ul>
 <br/>

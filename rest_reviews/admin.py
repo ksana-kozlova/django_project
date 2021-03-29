@@ -5,13 +5,8 @@ from . import models
 class ReviewInline(admin.TabularInline):
     model = models.Review
 
-    def is_edited(self, obj):
-        return self.is_edited()
-
-    is_edited.boolean = True
-
-    field = ('subject', 'text', 'created_at', 'is_edited')
-    readonly_fields = ('subject', 'text', 'created_at')
+    field = ('subject', 'text', 'created_at', 'stars', 'review_image')
+    readonly_fields = ('subject', 'text', 'created_at', 'stars')
     ordering = ('-created_at',)
     show_change_link = True
 
@@ -20,9 +15,6 @@ class ReviewInline(admin.TabularInline):
 
 
 class RestaurantAdmin(admin.ModelAdmin):
-
-    def has_add_permission(self, request):
-        return False
 
     list_display = ('title', 'adress', 'description', 'rest_image')
     ordering = ('title',)
@@ -33,21 +25,19 @@ class RestaurantAdmin(admin.ModelAdmin):
 
 class ReviewAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(updated=Max('updated_at'))
+        return super().get_queryset(request).annotate(updated=Max('created_at'))
 
-    def updated(self, obj):
-        return obj.updated_at
-    
-    updated.admin_order_field = 'updated_at'
+    def created(self, obj):
+        return obj.created_at
 
     def has_add_permission(self, request):
         return False
 
-    list_display = ('subject', 'author', 'updated_at')
-    ordering = ('subject',)
-    fields = ('subject', 'author', 'created_at')
-    readonly_fields = ('author', 'created_at')
-    view_on_site = True
+    list_display = ('subject', 'author','text','rest', 'created_at', 'stars', 'review_image')
+    ordering = ('-created_at', 'subject')
+    fields = ('subject', 'author','text', 'created_at', 'stars', 'review_image')
+    readonly_fields = ('author', 'created_at', 'stars')
+    
 
 
 
